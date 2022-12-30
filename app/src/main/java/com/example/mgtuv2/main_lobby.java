@@ -3,12 +3,16 @@ package com.example.mgtuv2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
 
 
 public class main_lobby extends AppCompatActivity {
@@ -31,17 +35,21 @@ public class main_lobby extends AppCompatActivity {
         //random letter generator
         random_text_view=findViewById(R.id.random_text_view);
         random_button_generator=findViewById(R.id.random_button_generator);
+        //qrcode generator
+        ivOutput = findViewById(R.id.qrcode_output);
+
 
         random_button_generator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
-                random_text_view.setText(generate_random_password());
+                String password = generate_random_password();
+                random_text_view.setText(password);
+                ivOutput.setImageBitmap(generate_qrcode_image(password));
             }
         });
 
-        //qrcode generator
-        ivOutput = findViewById(R.id.iv_output);
+
     }
 
     //Функция выхода из учетки. Можно вызывать когда юзер выходит по кнопке, либо истек срок проверки в базе данных
@@ -52,6 +60,7 @@ public class main_lobby extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //Генерирует пароль из 8 символов, возвращает String password
     public String generate_random_password()
     {
         int digit = 8;
@@ -76,9 +85,16 @@ public class main_lobby extends AppCompatActivity {
                     password += String.valueOf(upper_cases.charAt((int)(lower_cases.length()*Math.random())));
                     break;
             }
-
         }
-
         return password;
+    }
+
+    public Bitmap generate_qrcode_image(String password)
+    {
+        QRGEncoder qrgEncoder = new QRGEncoder(password,null, QRGContents.Type.TEXT,512);
+        // Getting QR-Code as Bitmap
+        Bitmap qrBits = qrgEncoder.getBitmap(0);
+
+        return qrBits;
     }
 }
