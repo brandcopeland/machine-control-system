@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MGTU СКС V2</string>
+    <string name="login_lobby_title">Введите логин и пароль</string>
+</resources>
