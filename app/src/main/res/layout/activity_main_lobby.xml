@@ -45,11 +45,14 @@
     <ImageView
         android:id="@+id/qrcode_output"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="39dp" />
+        app:layout_constraintBottom_toTopOf="@+id/random_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/access_checkmark_text"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="-16dp" />
 
     <TextView
         android:id="@+id/random_text_view"
