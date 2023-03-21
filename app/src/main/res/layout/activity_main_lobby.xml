@@ -56,7 +56,7 @@
         app:layout_constraintTop_toBottomOf="@+id/access_checkmark_text2" />
 
     <TextView
-        android:id="@+id/random_text_view"
+        android:id="@+id/QRCodeTextOutput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"

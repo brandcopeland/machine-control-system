@@ -13,8 +13,8 @@ import android.widget.Toast;
 public class main_login_page extends AppCompatActivity {
 
     TextView login_lobby_title;
-    EditText login_lobby_login;
-    EditText login_lobby_password;
+    static EditText login_lobby_login;
+    static EditText login_lobby_password;
     Button login_lobby_enter_button;
 
 
@@ -34,7 +34,7 @@ public class main_login_page extends AppCompatActivity {
             public void onClick(View view)
             {
                 //Если логин и пароль есть в базе
-                if (check_login_and_password_in_database(login_lobby_login.getText().toString(), login_lobby_password.getText().toString()))
+                if (check_login_and_password_in_database(getLoginString(), getPasswordString()))
                 {
                     Toast.makeText(main_login_page.this, "LOGIN SUCCESSFULL",Toast.LENGTH_SHORT).show();
                     login(view);
@@ -56,13 +56,18 @@ public class main_login_page extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public boolean check_login_and_password_in_database(String login, String password)
+    public boolean check_login_and_password_in_database(String login, String password) //Убрать Логин и пароль
     {
-        if (login.equals("admin") && password.equals("password"))
-        {
-            return true;
-        }
-        else
-            return false;
+        AuthUserTask AUR = new AuthUserTask();
+        AUR.execute();
+        return true;
+    }
+
+    public static String getLoginString() {
+        return login_lobby_login.getText().toString();
+    }
+    public static String getPasswordString() {
+        return login_lobby_password.getText().toString();
     }
 }
+

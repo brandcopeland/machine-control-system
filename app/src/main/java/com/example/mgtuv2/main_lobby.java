@@ -18,7 +18,7 @@ import androidmads.library.qrgenearator.QRGEncoder;
 public class main_lobby extends AppCompatActivity {
 
     //random letter generator
-    TextView random_text_view;
+    static TextView QRCodeTextOutput;
     Button random_button_generator;
 
     //qrcode generator
@@ -33,7 +33,7 @@ public class main_lobby extends AppCompatActivity {
         setContentView(R.layout.activity_main_lobby);
 
         //random letter generator
-        random_text_view=findViewById(R.id.random_text_view);
+        QRCodeTextOutput=findViewById(R.id.QRCodeTextOutput);
         random_button_generator=findViewById(R.id.random_button_generator);
         //qrcode generator
         ivOutput = findViewById(R.id.qrcode_output);
@@ -44,7 +44,7 @@ public class main_lobby extends AppCompatActivity {
             public void onClick(View view)
             {
                 String password = generate_random_password();
-                random_text_view.setText(password);
+                QRCodeTextOutput.setText(password);
                 ivOutput.setImageBitmap(generate_qrcode_image(password));
             }
         });
@@ -96,5 +96,9 @@ public class main_lobby extends AppCompatActivity {
         Bitmap qrBits = qrgEncoder.getBitmap(0);
 
         return qrBits;
+    }
+
+    public static TextView getQRCodeTextOutput() {
+        return QRCodeTextOutput;
     }
 }
