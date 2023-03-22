@@ -23,13 +23,18 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
 
         //djangoUser.getBody(conn) - Это QRcode + timestamp в ввиде JSON
         //Передаются в метод onPostExecute в виде  String response
-        return djangoUser.getBody(conn);
+        String tempQrCodeAndTimestamp = djangoUser.getBody(conn);
+        djangoUser.setReceivedQRcodeAndTimestamp(tempQrCodeAndTimestamp);
+
+        return tempQrCodeAndTimestamp;
 
     }
 
     @Override
     protected void onPostExecute(String response) {
         System.out.println(response);
-        main_lobby.getQRCodeTextOutput().setText(response);
+        DjangoUser.convertStringJsonReceivedQRCodeAndTimeStampToStringQR();
+        main_lobby.getQRCodeTextOutput().setText(DjangoUser.getQrCode());
+        main_lobby.setQRCodeImageOutputFromString(DjangoUser.getQrCode());
     }
 }

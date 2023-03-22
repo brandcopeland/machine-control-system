@@ -2,6 +2,9 @@ package com.example.mgtuv2;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,6 +28,38 @@ public class DjangoUser {
     private final String siteAddress;
     private String csrfToken = "";
     private String sessionId = "";
+    //Получен ли Сессион Айди для проверки на в базе данных ( Если нет- доступа нет)
+    public static boolean isSessionIdReceived;
+
+    private static String receivedQRcodeAndTimestamp = "";
+
+    public String getReceivedQRcodeAndTimestamp() {
+        return receivedQRcodeAndTimestamp;
+    }
+    public void setReceivedQRcodeAndTimestamp(String InputQRCodeAndTimeSTamp) {
+        receivedQRcodeAndTimestamp = InputQRCodeAndTimeSTamp;
+    }
+
+    public static void convertStringJsonReceivedQRCodeAndTimeStampToStringQR() {
+        try {
+            String jsonString = receivedQRcodeAndTimestamp; // здесь строка JSON
+            JSONObject jsonObject = new JSONObject(jsonString); // создаем объект JSON из строки
+            String QrCodeFromJSON = jsonObject.getString("code"); // получаем QR Code из JSON
+            QrCode = QrCodeFromJSON;
+         } catch (JSONException e) {
+            e.printStackTrace();
+        };
+    }
+
+    private static String QrCode = "";
+
+    public static String getQrCode(){
+        return QrCode;
+    }
+
+    public void setQrCode(String inputQrCode){
+        QrCode = inputQrCode;
+    }
     private String djangoCookieHeader = "";
 
     private final String loginUrl;
@@ -101,7 +136,11 @@ public class DjangoUser {
                 logger.severe("CSRF токен отсутствует");
             } else if (this.sessionId.isEmpty()) {
                 logger.severe("sessionId отсутствует");
+                isSessionIdReceived = false;
+                System.out.println(" isSessionIdReceived = false");
             } else {
+                System.out.println(" isSessionIdReceived = true");
+                isSessionIdReceived = true;
                 setupCookies();
             }
             return;

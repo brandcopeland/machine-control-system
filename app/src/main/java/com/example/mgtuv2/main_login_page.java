@@ -34,15 +34,17 @@ public class main_login_page extends AppCompatActivity {
             public void onClick(View view)
             {
                 //Если логин и пароль есть в базе
-                if (check_login_and_password_in_database(getLoginString(), getPasswordString()))
-                {
-                    Toast.makeText(main_login_page.this, "LOGIN SUCCESSFULL",Toast.LENGTH_SHORT).show();
-                    login(view);
-                }
-                else
-                {
-                    Toast.makeText(main_login_page.this, "LOGIN FAILED",Toast.LENGTH_SHORT).show();
-                }
+
+                    if (check_login_and_password_in_database(getLoginString(), getPasswordString()))
+                    {
+                        Toast.makeText(main_login_page.this, "LOGIN SUCCESSFULL",Toast.LENGTH_SHORT).show();
+                        login(view);
+                    }
+                    else
+                    {
+                        Toast.makeText(main_login_page.this, "LOGIN FAILED",Toast.LENGTH_SHORT).show();
+                    }
+
             }
         });
 
@@ -61,6 +63,20 @@ public class main_login_page extends AppCompatActivity {
         AuthUserTask AUR = new AuthUserTask();
         AUR.execute();
         return true;
+//        while(true){
+//            if(DjangoUser.isSessionIdReceived == true){
+//                System.out.println(" isSessionIdReceived = true in checkloginpass");
+//                return true;
+//            }
+//            else if (DjangoUser.isSessionIdReceived == false){
+//                System.out.println(" isSessionIdReceived = true in checkloginpass");
+//                return false;
+//            }
+//            else{
+//                System.out.println("Waiting for isSessionIdReceived (null)");
+//            }
+//        }
+
     }
 
     public static String getLoginString() {

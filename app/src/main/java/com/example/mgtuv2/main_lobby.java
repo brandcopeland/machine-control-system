@@ -22,7 +22,7 @@ public class main_lobby extends AppCompatActivity {
     Button random_button_generator;
 
     //qrcode generator
-    ImageView ivOutput;
+    static ImageView ivOutput;
     String secret_code_for_qr = "SecretCodeForQr1";
 
     @Override
@@ -43,9 +43,11 @@ public class main_lobby extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                String password = generate_random_password();
-                QRCodeTextOutput.setText(password);
-                ivOutput.setImageBitmap(generate_qrcode_image(password));
+                AuthUserTask AUR = new AuthUserTask();
+                AUR.execute();
+//                String password = generate_random_password();
+//                QRCodeTextOutput.setText(password);
+//                ivOutput.setImageBitmap(generate_qrcode_image(password));
             }
         });
 
@@ -89,7 +91,7 @@ public class main_lobby extends AppCompatActivity {
         return password;
     }
 
-    public Bitmap generate_qrcode_image(String password)
+    public static Bitmap generate_qrcode_image(String password)
     {
         QRGEncoder qrgEncoder = new QRGEncoder(password,null, QRGContents.Type.TEXT,512);
         // Getting QR-Code as Bitmap
@@ -98,6 +100,10 @@ public class main_lobby extends AppCompatActivity {
         return qrBits;
     }
 
+
+    public static void setQRCodeImageOutputFromString(String inputString){
+        ivOutput.setImageBitmap(generate_qrcode_image(inputString));
+    }
     public static TextView getQRCodeTextOutput() {
         return QRCodeTextOutput;
     }
