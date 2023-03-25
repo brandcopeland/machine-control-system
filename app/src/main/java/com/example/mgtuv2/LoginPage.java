@@ -33,7 +33,7 @@ public class LoginPage extends AppCompatActivity {
             public void onClick(View view) {
                 //Если логин и пароль есть в базе
 
-                if (check_login_and_password_in_database()) {
+                if (checkLoginPasswordInDatabase()) {
                     Toast.makeText(LoginPage.this, "LOGIN SUCCESSFULL", Toast.LENGTH_SHORT).show();
                     login(view);
                 } else {
@@ -52,7 +52,7 @@ public class LoginPage extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public boolean check_login_and_password_in_database()
+    public boolean checkLoginPasswordInDatabase()
     {
         AuthUserTask AUR = new AuthUserTask();
         AUR.execute();
