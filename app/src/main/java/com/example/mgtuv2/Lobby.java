@@ -11,11 +11,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
 
-public class main_lobby extends AppCompatActivity {
+public class Lobby extends AppCompatActivity {
 
     //random letter generator
     static TextView QRCodeTextOutput;
@@ -45,9 +50,6 @@ public class main_lobby extends AppCompatActivity {
             {
                 AuthUserTask AUR = new AuthUserTask();
                 AUR.execute();
-//                String password = generate_random_password();
-//                QRCodeTextOutput.setText(password);
-//                ivOutput.setImageBitmap(generate_qrcode_image(password));
             }
         });
 
@@ -57,41 +59,13 @@ public class main_lobby extends AppCompatActivity {
     //Функция выхода из учетки. Можно вызывать когда юзер выходит по кнопке, либо истек срок проверки в базе данных
     public void unlogin(View view)
     {
-        Toast.makeText(main_lobby.this, "UNLOGIN SUCCESSFULL",Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, main_login_page.class);
+        DjangoUser.resetSessionId();
+        Toast.makeText(Lobby.this, "UNLOGIN SUCCESSFULL",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, LoginPage.class);
         startActivity(intent);
     }
 
-    //Генерирует пароль из 8 символов, возвращает String password
-    public String generate_random_password()
-    {
-        int digit = 8;
-        String lower_cases = "qwertyuiopasdfghjklzxcvbnm";
-        String upper_cases = "QWERTYUIOPASDFGHJKLZXCVBNM";
-        String password = "";
-
-        for (int i = 0; i < digit; i++)
-        {
-            int rand = (int)(3* Math.random());
-            switch (rand)
-            {
-                case 0:
-                    password += String.valueOf((int)(10*Math.random()));
-                    break;
-                case 1:
-//                    password += (int)(lower_cases.length()*Math.random());
-                    password += String.valueOf(lower_cases.charAt((int)(lower_cases.length()*Math.random())));
-                    break;
-                case 2:
-//                    password += (int)(upper_cases.length()*Math.random());
-                    password += String.valueOf(upper_cases.charAt((int)(lower_cases.length()*Math.random())));
-                    break;
-            }
-        }
-        return password;
-    }
-
-    public static Bitmap generate_qrcode_image(String password)
+    public static Bitmap generateQrCodeImage(String password)
     {
         QRGEncoder qrgEncoder = new QRGEncoder(password,null, QRGContents.Type.TEXT,512);
         // Getting QR-Code as Bitmap
@@ -101,10 +75,19 @@ public class main_lobby extends AppCompatActivity {
     }
 
 
-    public static void setQRCodeImageOutputFromString(String inputString){
-        ivOutput.setImageBitmap(generate_qrcode_image(inputString));
+    public static void setQRCodeImageOutput(String inputString){
+        ivOutput.setImageBitmap(generateQrCodeImage(inputString));
     }
     public static TextView getQRCodeTextOutput() {
         return QRCodeTextOutput;
+    }
+
+    public static String timestampToTimeString(String timestamp){
+        long timestampSeconds = Long.parseLong(timestamp); // Replace with your timestamp in seconds
+        Date date = new Date(timestampSeconds * 1000L); // Convert seconds to milliseconds
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); // Define the date format
+        sdf.setTimeZone(TimeZone.getDefault()); // Set the time zone to the default time zone of the device
+        String localTimeString1 = sdf.format(date); // Convert the date to a local time string
+        return localTimeString1;
     }
 }

@@ -12,7 +12,7 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
         DjangoUser djangoUser = new DjangoUser("https://k7scm.site/");
         System.out.println(djangoUser.getCsrfToken());
 
-        djangoUser.auth(main_login_page.getLoginString(), main_login_page.getPasswordString());
+        djangoUser.auth(LoginPage.getLoginString(), LoginPage.getPasswordString());
 
         System.out.println("CSRF: ");
         System.out.println(djangoUser.getCsrfToken());
@@ -24,7 +24,7 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
         //djangoUser.getBody(conn) - Это QRcode + timestamp в ввиде JSON
         //Передаются в метод onPostExecute в виде  String response
         String tempQrCodeAndTimestamp = djangoUser.getBody(conn);
-        djangoUser.setReceivedQRcodeAndTimestamp(tempQrCodeAndTimestamp);
+        djangoUser.setReceivedQrCodeAndTimestamp(tempQrCodeAndTimestamp);
 
         return tempQrCodeAndTimestamp;
 
@@ -33,8 +33,14 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String response) {
         System.out.println(response);
-        DjangoUser.convertStringJsonReceivedQRCodeAndTimeStampToStringQR();
-        main_lobby.getQRCodeTextOutput().setText(DjangoUser.getQrCode());
-        main_lobby.setQRCodeImageOutputFromString(DjangoUser.getQrCode());
+        if (DjangoUser.getSessionId()==""){
+            Lobby.getQRCodeTextOutput().setText("Ошибка авторизации");
+            Lobby.setQRCodeImageOutput("Error");
+        }
+        else {
+            DjangoUser.setupQrCodeAndTimeRange();
+            Lobby.getQRCodeTextOutput().setText(DjangoUser.getQrCode() + "\n" + Lobby.timestampToTimeString(DjangoUser.getTimeExpire()));
+            Lobby.setQRCodeImageOutput(DjangoUser.getQrCode());
+        }
     }
 }

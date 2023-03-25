@@ -1,5 +1,8 @@
 package com.example.mgtuv2;
 
+import android.content.Intent;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONException;
@@ -27,39 +30,52 @@ public class DjangoUser {
 
     private final String siteAddress;
     private String csrfToken = "";
-    private String sessionId = "";
-    //Получен ли Сессион Айди для проверки на в базе данных ( Если нет- доступа нет)
-    public static boolean isSessionIdReceived;
+    private static String sessionId = "";
 
-    private static String receivedQRcodeAndTimestamp = "";
-
-    public String getReceivedQRcodeAndTimestamp() {
-        return receivedQRcodeAndTimestamp;
+    //JSON String QrCode and timestamp полученные
+    private static String receivedQrCodeAndTimestamp = "";
+    public String getReceivedQrCodeAndTimestamp() {
+        return receivedQrCodeAndTimestamp;
     }
-    public void setReceivedQRcodeAndTimestamp(String InputQRCodeAndTimeSTamp) {
-        receivedQRcodeAndTimestamp = InputQRCodeAndTimeSTamp;
+    public void setReceivedQrCodeAndTimestamp(String inputQrCodeAndTimestamp) {
+        receivedQrCodeAndTimestamp = inputQrCodeAndTimestamp;
     }
 
-    public static void convertStringJsonReceivedQRCodeAndTimeStampToStringQR() {
+    //Convert JSON String with QrCode and Timestamps to class variables
+    public static void setupQrCodeAndTimeRange(){
         try {
-            String jsonString = receivedQRcodeAndTimestamp; // здесь строка JSON
+            String jsonString = receivedQrCodeAndTimestamp; // здесь строка JSON
             JSONObject jsonObject = new JSONObject(jsonString); // создаем объект JSON из строки
             String QrCodeFromJSON = jsonObject.getString("code"); // получаем QR Code из JSON
+            String time_start = jsonObject.getString("time_start");
+            String time_expire = jsonObject.getString("time_expire");
             QrCode = QrCodeFromJSON;
-         } catch (JSONException e) {
+            timeStart = time_start;
+            timeExpire = time_expire;
+        } catch (JSONException e) {
             e.printStackTrace();
         };
     }
 
+    //QrCode String
     private static String QrCode = "";
-
     public static String getQrCode(){
         return QrCode;
     }
-
     public void setQrCode(String inputQrCode){
         QrCode = inputQrCode;
     }
+
+    //timeStart String
+    private static String timeStart = "";
+    public static String getTimeStart(){ return timeStart; }
+    public void setTimeStart(String inputTimeStart){ timeStart = inputTimeStart; }
+
+    //timeExpire String
+    private static String timeExpire = "";
+    public static String getTimeExpire(){return timeExpire;}
+    public void setTimeExpire(String inputTimeExpire){timeStart = inputTimeExpire;}
+
     private String djangoCookieHeader = "";
 
     private final String loginUrl;
@@ -136,11 +152,9 @@ public class DjangoUser {
                 logger.severe("CSRF токен отсутствует");
             } else if (this.sessionId.isEmpty()) {
                 logger.severe("sessionId отсутствует");
-                isSessionIdReceived = false;
-                System.out.println(" isSessionIdReceived = false");
+
             } else {
-                System.out.println(" isSessionIdReceived = true");
-                isSessionIdReceived = true;
+                //LoginPage.login();
                 setupCookies();
             }
             return;
@@ -309,9 +323,14 @@ public class DjangoUser {
         return csrfToken;
     }
 
-    public String getSessionId() {
+    public static String getSessionId() {
         return sessionId;
     }
+
+    public static void resetSessionId(){
+        sessionId = "";
+    }
+
 
     public String getDjangoCookieHeader() {
         return djangoCookieHeader;
@@ -325,6 +344,7 @@ public class DjangoUser {
 
         this.djangoCookieHeader = generateCookieHeader(djangoCookies);
     }
+
 
     private static class PostData {
         public byte[] bytes;
@@ -360,6 +380,7 @@ public class DjangoUser {
             return new PostData(postDataBytes, postDataLength);
         }
 
+
         @Override
         public boolean equals(Object o) {
             if (this == o) {
@@ -384,5 +405,7 @@ public class DjangoUser {
         public String toString() {
             return String.format("PostData{bytes=%s, length=%s}", Arrays.toString(bytes), length);
         }
+
+
     }
 }
