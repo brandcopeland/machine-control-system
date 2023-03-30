@@ -1,8 +1,5 @@
 package com.example.mgtuv2;
 
-import android.content.Intent;
-import android.view.View;
-
 import androidx.annotation.NonNull;
 
 import org.json.JSONException;
@@ -33,7 +30,7 @@ public class DjangoUser {
     private static String sessionId = "";
 
     //JSON String QrCode and timestamp полученные
-    private static String receivedQrCodeAndTimestamp = "";
+    private String receivedQrCodeAndTimestamp = "";
     public String getReceivedQrCodeAndTimestamp() {
         return receivedQrCodeAndTimestamp;
     }
@@ -42,7 +39,7 @@ public class DjangoUser {
     }
 
     //Convert JSON String with QrCode and Timestamps to class variables
-    public static void setupQrCodeAndTimeRange(){
+    public void setupQrCodeAndTimeRange(){
         try {
             String jsonString = receivedQrCodeAndTimestamp; // здесь строка JSON
             JSONObject jsonObject = new JSONObject(jsonString); // создаем объект JSON из строки
@@ -54,7 +51,7 @@ public class DjangoUser {
             timeExpire = time_expire;
         } catch (JSONException e) {
             e.printStackTrace();
-        };
+        }
     }
 
     //QrCode String
@@ -72,8 +69,8 @@ public class DjangoUser {
     public void setTimeStart(String inputTimeStart){ timeStart = inputTimeStart; }
 
     //timeExpire String
-    private static String timeExpire = "";
-    public static String getTimeExpire(){return timeExpire;}
+    private String timeExpire = "";
+    public String getTimeExpire(){return timeExpire;}
     public void setTimeExpire(String inputTimeExpire){timeStart = inputTimeExpire;}
 
     private String djangoCookieHeader = "";
@@ -323,7 +320,7 @@ public class DjangoUser {
         return csrfToken;
     }
 
-    public static String getSessionId() {
+    public String getSessionId() {
         return sessionId;
     }
 
