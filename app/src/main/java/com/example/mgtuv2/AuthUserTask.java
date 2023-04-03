@@ -1,8 +1,6 @@
 package com.example.mgtuv2;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
-
 import java.net.HttpURLConnection;
 
 public class AuthUserTask extends AsyncTask<Void, Void, String> {
@@ -43,7 +41,7 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
         else {
             djangoUser.setupQrCodeAndTimeRange();
             Lobby.getQRCodeTextOutput().setText(String.format("%s\n%s",
-                    DjangoUser.getQrCode(),
+                    djangoUser.getQrCode(),
                     Lobby.timestampToTimeString(djangoUser.getTimeExpire())));
             Lobby.setQRCodeImageOutput(djangoUser.getQrCode());
         }

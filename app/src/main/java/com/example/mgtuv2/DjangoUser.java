@@ -1,5 +1,6 @@
 package com.example.mgtuv2;
 
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONException;
@@ -55,8 +56,8 @@ public class DjangoUser {
     }
 
     //QrCode String
-    private static String QrCode = "";
-    public static String getQrCode(){
+    private String QrCode = "";
+    public String getQrCode(){
         return QrCode;
     }
     public void setQrCode(String inputQrCode){
@@ -148,8 +149,8 @@ public class DjangoUser {
             if (this.csrfToken.isEmpty()) {
                 logger.severe("CSRF токен отсутствует");
             } else if (this.sessionId.isEmpty()) {
-                logger.severe("sessionId отсутствует");
-
+                logger.severe("sessionId отсутствует"); //Все равно что логин пароль неверный
+                LoginPage.loginErrorUiChange();
             } else {
                 //LoginPage.login();
                 setupCookies();

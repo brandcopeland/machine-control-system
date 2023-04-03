@@ -21,8 +21,6 @@ import androidmads.library.qrgenearator.QRGEncoder;
 
 
 public class Lobby extends AppCompatActivity {
-
-    //random letter generator
     static TextView QRCodeTextOutput;
     Button random_button_generator;
 
@@ -39,9 +37,9 @@ public class Lobby extends AppCompatActivity {
 
         //random letter generator
         QRCodeTextOutput=findViewById(R.id.QRCodeTextOutput);
-        random_button_generator=findViewById(R.id.random_button_generator);
+        random_button_generator=findViewById(R.id.buttonReconnectionGenerator);
         //qrcode generator
-        ivOutput = findViewById(R.id.qrcode_output);
+        ivOutput = findViewById(R.id.QrCodeImageOutput);
 
 
         random_button_generator.setOnClickListener(new View.OnClickListener() {

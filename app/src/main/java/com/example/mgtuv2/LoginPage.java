@@ -7,32 +7,36 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginPage extends AppCompatActivity {
 
-    TextView login_lobby_title;
-    static EditText login_lobby_login;
-    static EditText login_lobby_password;
-    Button login_lobby_enter_button;
-
+    TextView loginPageTitle;
+    static TextView textErrorLogin;
+    static EditText inputLogin;
+    static EditText inputPassword;
+    Button loginButton;
+    ProgressBar loadingCircle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_login_page);
 
-        login_lobby_title = findViewById(R.id.login_lobby_title);
-        login_lobby_login = findViewById(R.id.login_lobby_login);
-        login_lobby_password = findViewById(R.id.login_lobby_password);
-        login_lobby_enter_button = findViewById(R.id.login_lobby_enter_button);
-
-        login_lobby_enter_button.setOnClickListener(new View.OnClickListener() {
+        textErrorLogin = findViewById(R.id.textErrorLogin);
+        loginPageTitle = findViewById(R.id.loginPageTitle);
+        inputLogin = findViewById(R.id.inputLogin);
+        inputPassword = findViewById(R.id.inputPassword);
+        loginButton = findViewById(R.id.loginButton);
+        loadingCircle = findViewById(R.id.loadingCircle);
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Если логин и пароль есть в базе
+                loginButtonOnClickUiChange();
 
+                //Если логин и пароль есть в базе
                 if (checkLoginPasswordInDatabase()) {
                     Toast.makeText(LoginPage.this, "LOGIN SUCCESSFULL", Toast.LENGTH_SHORT).show();
                     login(view);
@@ -60,12 +64,26 @@ public class LoginPage extends AppCompatActivity {
 
     }
 
+    public static void loginErrorUiChange(){
+        if (textErrorLogin.getVisibility() == View.INVISIBLE)
+        {
+            textErrorLogin.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void loginButtonOnClickUiChange(){
+        textErrorLogin.setVisibility(View.INVISIBLE);
+        loginButton.setEnabled(false);
+        loadingCircle.setVisibility(View.VISIBLE);
+
+    }
+
     public static String getLoginString() {
-        return login_lobby_login.getText().toString();
+        return inputLogin.getText().toString();
     }
 
     public static String getPasswordString() {
-        return login_lobby_password.getText().toString();
+        return inputPassword.getText().toString();
     }
 }
 

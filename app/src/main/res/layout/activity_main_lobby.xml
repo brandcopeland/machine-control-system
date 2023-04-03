@@ -7,7 +7,7 @@
     tools:context=".Lobby">
 
     <TextView
-        android:id="@+id/access_checkmark_text"
+        android:id="@+id/lobbyTextAccess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40sp"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/access_checkmark_text2"
+        android:id="@+id/lobbyTextAccessStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -28,11 +28,11 @@
         android:textColor="#47CF4D"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/access_checkmark_text"
+        app:layout_constraintStart_toEndOf="@+id/lobbyTextAccess"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button_unlogin"
+        android:id="@+id/unloginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50sp"
@@ -43,7 +43,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/qrcode_output"
+        android:id="@+id/QrCodeImageOutput"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginStart="10dp"
@@ -53,7 +53,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/access_checkmark_text2" />
+        app:layout_constraintTop_toBottomOf="@+id/lobbyTextAccessStatus" />
 
     <TextView
         android:id="@+id/QRCodeTextOutput"
@@ -61,18 +61,18 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/random_button_generator"
+        app:layout_constraintBottom_toTopOf="@+id/buttonReconnectionGenerator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/random_button_generator"
+        android:id="@+id/buttonReconnectionGenerator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:text="Generate"
-        app:layout_constraintBottom_toTopOf="@+id/button_unlogin"
+        app:layout_constraintBottom_toTopOf="@+id/unloginButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
