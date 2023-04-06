@@ -150,7 +150,7 @@ public class DjangoUser {
                 logger.severe("CSRF токен отсутствует");
             } else if (this.sessionId.isEmpty()) {
                 logger.severe("sessionId отсутствует"); //Все равно что логин пароль неверный
-                LoginPage.loginErrorUiChange();
+                //LoginPage.loginErrorUiChange();
             } else {
                 //LoginPage.login();
                 setupCookies();

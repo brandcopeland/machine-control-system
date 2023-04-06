@@ -1,11 +1,19 @@
 package com.example.mgtuv2;
 
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.widget.Toast;
+
 import java.net.HttpURLConnection;
 
 public class AuthUserTask extends AsyncTask<Void, Void, String> {
+    private LoginPage loginPage;
 
-    private static DjangoUser djangoUser;
+    public AuthUserTask(LoginPage loginPage) {
+        this.loginPage = loginPage;
+    }
+
+    static DjangoUser djangoUser;
 
 
     @Override
@@ -35,15 +43,15 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String response) {
         System.out.println(response);
         if (djangoUser.getSessionId().isEmpty()){
-            Lobby.getQRCodeTextOutput().setText("Ошибка авторизации");
-            Lobby.setQRCodeImageOutput("Error");
+            //Lobby.getQRCodeTextOutput().setText("Ошибка авторизации");
+            //Lobby.setQRCodeImageOutput("Error");
+            Toast.makeText(loginPage, "Authentication failed", Toast.LENGTH_SHORT).show();
+            LoginPage.loginErrorUiChange();
         }
         else {
-            djangoUser.setupQrCodeAndTimeRange();
-            Lobby.getQRCodeTextOutput().setText(String.format("%s\n%s",
-                    djangoUser.getQrCode(),
-                    Lobby.timestampToTimeString(djangoUser.getTimeExpire())));
-            Lobby.setQRCodeImageOutput(djangoUser.getQrCode());
+            Intent intent = new Intent(loginPage, Lobby.class);
+            loginPage.startActivity(intent);
+
         }
     }
 }

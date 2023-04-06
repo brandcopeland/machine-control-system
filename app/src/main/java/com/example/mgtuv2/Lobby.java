@@ -1,5 +1,7 @@
 package com.example.mgtuv2;
 
+import static com.example.mgtuv2.AuthUserTask.djangoUser;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -46,8 +48,11 @@ public class Lobby extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                AuthUserTask AUR = new AuthUserTask();
-                AUR.execute();
+                djangoUser.setupQrCodeAndTimeRange();
+                Lobby.getQRCodeTextOutput().setText(String.format("%s\n%s",
+                    djangoUser.getQrCode(),
+                    Lobby.timestampToTimeString(djangoUser.getTimeExpire())));
+                Lobby.setQRCodeImageOutput(djangoUser.getQrCode());
             }
         });
 
