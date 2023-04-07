@@ -61,13 +61,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonReconnectionGenerator"
+        app:layout_constraintBottom_toTopOf="@+id/buttonRefreshQrCode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/buttonReconnectionGenerator"
+        android:id="@+id/buttonRefreshQrCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"

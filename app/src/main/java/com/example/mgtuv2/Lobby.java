@@ -24,11 +24,9 @@ import androidmads.library.qrgenearator.QRGEncoder;
 
 public class Lobby extends AppCompatActivity {
     static TextView QRCodeTextOutput;
-    Button random_button_generator;
+    Button buttonRefreshQrCode;
 
-    //qrcode generator
-    static ImageView ivOutput;
-    String secret_code_for_qr = "SecretCodeForQr1";
+    static ImageView QrCodeImageOutput;
 
     @Override
     //Функция создания лобби. Надо сделать проверку на разрешение доступа
@@ -39,20 +37,16 @@ public class Lobby extends AppCompatActivity {
 
         //random letter generator
         QRCodeTextOutput=findViewById(R.id.QRCodeTextOutput);
-        random_button_generator=findViewById(R.id.buttonReconnectionGenerator);
+        buttonRefreshQrCode =findViewById(R.id.buttonRefreshQrCode);
         //qrcode generator
-        ivOutput = findViewById(R.id.QrCodeImageOutput);
+        QrCodeImageOutput = findViewById(R.id.QrCodeImageOutput);
+        showQRCodeUI();
 
-
-        random_button_generator.setOnClickListener(new View.OnClickListener() {
+        buttonRefreshQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
-                djangoUser.setupQrCodeAndTimeRange();
-                Lobby.getQRCodeTextOutput().setText(String.format("%s\n%s",
-                    djangoUser.getQrCode(),
-                    Lobby.timestampToTimeString(djangoUser.getTimeExpire())));
-                Lobby.setQRCodeImageOutput(djangoUser.getQrCode());
+                showQRCodeUI();
             }
         });
 
@@ -72,14 +66,20 @@ public class Lobby extends AppCompatActivity {
     {
         QRGEncoder qrgEncoder = new QRGEncoder(password,null, QRGContents.Type.TEXT,512);
         // Getting QR-Code as Bitmap
-        Bitmap qrBits = qrgEncoder.getBitmap(0);
 
-        return qrBits;
+        return qrgEncoder.getBitmap(0);
     }
 
+    public void showQRCodeUI(){
+        djangoUser.setupQrCodeAndTimeRange();
+        Lobby.getQRCodeTextOutput().setText(String.format("%s\n%s",
+                djangoUser.getQrCode(),
+                Lobby.timestampToTimeString(djangoUser.getTimeExpire())));
+        Lobby.setQRCodeImageOutput(djangoUser.getQrCode());
+    }
 
     public static void setQRCodeImageOutput(String inputString){
-        ivOutput.setImageBitmap(generateQrCodeImage(inputString));
+        QrCodeImageOutput.setImageBitmap(generateQrCodeImage(inputString));
     }
     public static TextView getQRCodeTextOutput() {
         return QRCodeTextOutput;
@@ -90,7 +90,6 @@ public class Lobby extends AppCompatActivity {
         Date date = new Date(timestampSeconds * 1000L); // Convert seconds to milliseconds
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); // Define the date format
         sdf.setTimeZone(TimeZone.getDefault()); // Set the time zone to the default time zone of the device
-        String localTimeString1 = sdf.format(date); // Convert the date to a local time string
-        return localTimeString1;
+        return sdf.format(date); //local time string
     }
 }

@@ -1,5 +1,6 @@
 package com.example.mgtuv2;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -7,7 +8,8 @@ import android.widget.Toast;
 import java.net.HttpURLConnection;
 
 public class AuthUserTask extends AsyncTask<Void, Void, String> {
-    private LoginPage loginPage;
+    @SuppressLint("StaticFieldLeak")
+    private final LoginPage loginPage;
 
     public AuthUserTask(LoginPage loginPage) {
         this.loginPage = loginPage;
@@ -17,8 +19,8 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
 
 
     @Override
-    protected String doInBackground(Void... _) {
-        this.djangoUser = new DjangoUser("https://k7scm.site/");
+    protected String doInBackground(Void... voids) {
+        djangoUser = new DjangoUser("https://k7scm.site/");
         System.out.println(djangoUser.getCsrfToken());
 
         djangoUser.auth(LoginPage.getLoginString(), LoginPage.getPasswordString());

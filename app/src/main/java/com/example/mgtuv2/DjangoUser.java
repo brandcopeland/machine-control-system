@@ -94,7 +94,7 @@ public class DjangoUser {
         }
         this.siteAddress = siteAddress;
         this.csrfToken = csrfToken;
-        this.sessionId = sessionId;
+        DjangoUser.sessionId = sessionId;
         setupCookies();
 
         this.loginUrl = siteAddress + "/login/";
@@ -141,19 +141,23 @@ public class DjangoUser {
                         this.csrfToken = token.get("csrftoken");
                     }
                     if (token.containsKey("sessionid")) {
-                        this.sessionId = token.get("sessionid");
+                        sessionId = token.get("sessionid");
                     }
                 }
             }
 
+            assert this.csrfToken != null;
             if (this.csrfToken.isEmpty()) {
                 logger.severe("CSRF токен отсутствует");
-            } else if (this.sessionId.isEmpty()) {
-                logger.severe("sessionId отсутствует"); //Все равно что логин пароль неверный
-                //LoginPage.loginErrorUiChange();
             } else {
-                //LoginPage.login();
-                setupCookies();
+                assert sessionId != null;
+                if (sessionId.isEmpty()) {
+                    logger.severe("sessionId отсутствует"); //Все равно что логин пароль неверный
+                    //LoginPage.loginErrorUiChange();
+                } else {
+                    //LoginPage.login();
+                    setupCookies();
+                }
             }
             return;
         } catch (IOException e) {
@@ -190,7 +194,7 @@ public class DjangoUser {
     }
 
     public Map<String, String> cookieToMap(String cookies) {
-        Map<String, String> cookieMap = new HashMap<String, String>();
+        Map<String, String> cookieMap = new HashMap<>();
         for (String cookie : cookies.split(";")) {
             cookie = cookie.trim();
             if (cookie.contains("=")) {
@@ -337,7 +341,7 @@ public class DjangoUser {
     private void setupCookies() {
         Map<String, String> djangoCookies = new HashMap<>();
         djangoCookies.put("csrftoken", this.csrfToken);
-        djangoCookies.put("sessionid", this.sessionId);
+        djangoCookies.put("sessionid", sessionId);
 
 
         this.djangoCookieHeader = generateCookieHeader(djangoCookies);
