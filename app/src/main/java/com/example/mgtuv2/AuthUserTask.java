@@ -1,6 +1,7 @@
 package com.example.mgtuv2;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -20,15 +21,22 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
-        djangoUser = new DjangoUser("https://k7scm.site/");
-        System.out.println(djangoUser.getCsrfToken());
 
-        djangoUser.auth(LoginPage.getLoginString(), LoginPage.getPasswordString());
-
+        if (!loginPage.isNeedAutoAuth()) {
+            djangoUser = new DjangoUser("https://k7scm.site/");
+            djangoUser.auth(loginPage.getLoginString(), loginPage.getPasswordString());
+        }
+        else {
+            System.out.println("do set ");
+            djangoUser = new DjangoUser("https://k7scm.site/", loginPage.getCsrfTokenFromFiles(), loginPage.getSessionIdFromFiles());
+            System.out.println("posle set ");
+        }
         System.out.println("CSRF: ");
         System.out.println(djangoUser.getCsrfToken());
         System.out.println("SESSION ID: ");
         System.out.println(djangoUser.getSessionId());
+        System.out.println("ReceivedQrCodeAndTimestamp : ");
+        System.out.println(djangoUser.getReceivedQrCodeAndTimestamp());
 
         HttpURLConnection conn = djangoUser.getRequest("api/qr");
 
@@ -48,9 +56,12 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
             //Lobby.getQRCodeTextOutput().setText("Ошибка авторизации");
             //Lobby.setQRCodeImageOutput("Error");
             Toast.makeText(loginPage, "Authentication failed", Toast.LENGTH_SHORT).show();
-            LoginPage.loginErrorUiChange();
+            loginPage.setStatusIsNeedAuth(false);
+            loginPage.loginErrorUiChange();
         }
         else {
+            loginPage.saveSessionIdCsrfInFiles();
+            loginPage.setStatusIsNeedAuth(true);
             Intent intent = new Intent(loginPage, Lobby.class);
             loginPage.startActivity(intent);
 

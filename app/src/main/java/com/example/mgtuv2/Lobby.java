@@ -5,6 +5,7 @@ import static com.example.mgtuv2.AuthUserTask.djangoUser;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -23,15 +24,18 @@ import androidmads.library.qrgenearator.QRGEncoder;
 
 
 public class Lobby extends AppCompatActivity {
+
     static TextView QRCodeTextOutput;
     Button buttonRefreshQrCode;
 
     static ImageView QrCodeImageOutput;
 
+    SharedPreferences sPref;
     @Override
     //Функция создания лобби. Надо сделать проверку на разрешение доступа
     protected void onCreate(Bundle savedInstanceState)
     {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_lobby);
 
@@ -56,6 +60,7 @@ public class Lobby extends AppCompatActivity {
     //Функция выхода из учетки. Можно вызывать когда юзер выходит по кнопке, либо истек срок проверки в базе данных
     public void unlogin(View view)
     {
+        setStatusIsNeedAuth(false);
         DjangoUser.resetSessionId();
         Toast.makeText(Lobby.this, "UNLOGIN SUCCESSFULL",Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, LoginPage.class);
@@ -86,10 +91,25 @@ public class Lobby extends AppCompatActivity {
     }
 
     public static String timestampToTimeString(String timestamp){
+        if (timestamp.equals("")) {
+            return "";
+        }
         long timestampSeconds = Long.parseLong(timestamp); // Replace with your timestamp in seconds
         Date date = new Date(timestampSeconds * 1000L); // Convert seconds to milliseconds
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); // Define the date format
         sdf.setTimeZone(TimeZone.getDefault()); // Set the time zone to the default time zone of the device
         return sdf.format(date); //local time string
+    }
+
+    public void setStatusIsNeedAuth(Boolean inputBoolean){
+        sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putBoolean("isNeedAuth", inputBoolean);
+        ed.apply();
+    }
+
+    public Boolean isNeedAutoAuth(){
+        sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
+        return sPref.getBoolean("isNeedAuth", false);
     }
 }

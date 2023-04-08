@@ -1,6 +1,9 @@
 package com.example.mgtuv2;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONException;
@@ -24,7 +27,7 @@ import java.util.logging.Logger;
 
 public class DjangoUser {
 
-    private final Logger logger = Logger.getLogger("DjangoUser");
+   private final Logger logger = Logger.getLogger("DjangoUser");
 
     private final String siteAddress;
     private String csrfToken = "";
@@ -42,6 +45,7 @@ public class DjangoUser {
     //Convert JSON String with QrCode and Timestamps to class variables
     public void setupQrCodeAndTimeRange(){
         try {
+
             String jsonString = receivedQrCodeAndTimestamp; // здесь строка JSON
             JSONObject jsonObject = new JSONObject(jsonString); // создаем объект JSON из строки
             String QrCodeFromJSON = jsonObject.getString("code"); // получаем QR Code из JSON
@@ -153,9 +157,9 @@ public class DjangoUser {
                 assert sessionId != null;
                 if (sessionId.isEmpty()) {
                     logger.severe("sessionId отсутствует"); //Все равно что логин пароль неверный
-                    //LoginPage.loginErrorUiChange();
+
                 } else {
-                    //LoginPage.login();
+
                     setupCookies();
                 }
             }
@@ -324,11 +328,16 @@ public class DjangoUser {
     public String getCsrfToken() {
         return csrfToken;
     }
+    public void setCsrfToken(String inputCsrfToken){
+        csrfToken = inputCsrfToken;
+    }
 
     public String getSessionId() {
         return sessionId;
     }
-
+    public void setSessionId(String inputSessionId){
+        sessionId = inputSessionId;
+    }
     public static void resetSessionId(){
         sessionId = "";
     }
