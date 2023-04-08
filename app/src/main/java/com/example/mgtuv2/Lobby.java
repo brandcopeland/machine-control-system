@@ -50,7 +50,9 @@ public class Lobby extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                showQRCodeUI();
+                AuthUserTask AUR = new AuthUserTask(Lobby.this);
+                AUR.execute();
+                //showQRCodeUI();
             }
         });
 
@@ -76,10 +78,13 @@ public class Lobby extends AppCompatActivity {
     }
 
     public void showQRCodeUI(){
+
         djangoUser.setupQrCodeAndTimeRange();
         Lobby.getQRCodeTextOutput().setText(String.format("%s\n%s",
                 djangoUser.getQrCode(),
                 Lobby.timestampToTimeString(djangoUser.getTimeExpire())));
+        System.out.println("qr code");
+        System.out.println(djangoUser.getQrCode());
         Lobby.setQRCodeImageOutput(djangoUser.getQrCode());
     }
 
@@ -111,5 +116,17 @@ public class Lobby extends AppCompatActivity {
     public Boolean isNeedAutoAuth(){
         sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
         return sPref.getBoolean("isNeedAuth", false);
+    }
+
+    public String getSessionIdFromFiles(){
+        sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
+        String savedSessionIdTemp = sPref.getString("savedSessionId", "");
+        return savedSessionIdTemp;
+    }
+
+    public String getCsrfTokenFromFiles(){
+        sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
+        String savedCsrfTemp = sPref.getString("savedCsrf", "");
+        return savedCsrfTemp;
     }
 }

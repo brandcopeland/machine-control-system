@@ -10,10 +10,17 @@ import java.net.HttpURLConnection;
 
 public class AuthUserTask extends AsyncTask<Void, Void, String> {
     @SuppressLint("StaticFieldLeak")
-    private final LoginPage loginPage;
+    private LoginPage loginPage = null;
 
     public AuthUserTask(LoginPage loginPage) {
         this.loginPage = loginPage;
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private Lobby lobby = null;
+
+    public AuthUserTask(Lobby lobby) {
+        this.lobby = lobby;
     }
 
     static DjangoUser djangoUser;
@@ -21,14 +28,18 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
-
-        if (!loginPage.isNeedAutoAuth()) {
-            djangoUser = new DjangoUser("https://k7scm.site/");
-            djangoUser.auth(loginPage.getLoginString(), loginPage.getPasswordString());
-        }
-        else {
+        if (!(loginPage == null)) {
+            if (!loginPage.isNeedAutoAuth()) {
+                djangoUser = new DjangoUser("https://k7scm.site/");
+                djangoUser.auth(loginPage.getLoginString(), loginPage.getPasswordString());
+            } else {
+                System.out.println("do set ");
+                djangoUser = new DjangoUser("https://k7scm.site/", loginPage.getCsrfTokenFromFiles(), loginPage.getSessionIdFromFiles());
+                System.out.println("posle set ");
+            }
+        } else { // вход через регенерацию
             System.out.println("do set ");
-            djangoUser = new DjangoUser("https://k7scm.site/", loginPage.getCsrfTokenFromFiles(), loginPage.getSessionIdFromFiles());
+            djangoUser = new DjangoUser("https://k7scm.site/", lobby.getCsrfTokenFromFiles(), lobby.getSessionIdFromFiles());
             System.out.println("posle set ");
         }
         System.out.println("CSRF: ");
@@ -52,19 +63,28 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String response) {
         System.out.println(response);
-        if (djangoUser.getSessionId().isEmpty()){
-            //Lobby.getQRCodeTextOutput().setText("Ошибка авторизации");
-            //Lobby.setQRCodeImageOutput("Error");
-            Toast.makeText(loginPage, "Authentication failed", Toast.LENGTH_SHORT).show();
-            loginPage.setStatusIsNeedAuth(false);
-            loginPage.loginErrorUiChange();
-        }
-        else {
-            loginPage.saveSessionIdCsrfInFiles();
-            loginPage.setStatusIsNeedAuth(true);
-            Intent intent = new Intent(loginPage, Lobby.class);
-            loginPage.startActivity(intent);
-
+        if (!(loginPage == null)) {
+            if (djangoUser.getSessionId().isEmpty()) {
+                //Lobby.getQRCodeTextOutput().setText("Ошибка авторизации");
+                //Lobby.setQRCodeImageOutput("Error");
+                Toast.makeText(loginPage, "Authentication failed", Toast.LENGTH_SHORT).show();
+                loginPage.setStatusIsNeedAuth(false);
+                loginPage.loginErrorUiChange();
+            } else {
+                loginPage.saveSessionIdCsrfInFiles();
+                loginPage.setStatusIsNeedAuth(true);
+                Intent intent = new Intent(loginPage, Lobby.class);
+                loginPage.startActivity(intent);
+            }
+        } else {//регенерация через лобби
+            if (djangoUser.getSessionId().isEmpty()) {
+                lobby.setStatusIsNeedAuth(false);
+                Intent intent = new Intent(lobby, LoginPage.class);
+                lobby.startActivity(intent);
+            } else {
+                lobby.showQRCodeUI();
+                lobby.setStatusIsNeedAuth(true);
+            }
         }
     }
 }
