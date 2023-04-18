@@ -3,6 +3,7 @@ package com.example.mgtuv2;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -26,7 +27,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 public class DjangoUser {
-
    private final Logger logger = Logger.getLogger("DjangoUser");
 
     private final String siteAddress;
@@ -77,6 +77,15 @@ public class DjangoUser {
     private String timeExpire = "";
     public String getTimeExpire(){return timeExpire;}
     public void setTimeExpire(String inputTimeExpire){timeStart = inputTimeExpire;}
+
+    //internet connection error
+    private boolean internetConnectionErrorStatus;
+    public boolean getInternetConnectionErrorStatus(){
+        return internetConnectionErrorStatus ;
+    }
+    public void setInternetConnectionErrorStatus(boolean status){
+        internetConnectionErrorStatus = status;
+    }
 
     private String djangoCookieHeader = "";
 
@@ -192,7 +201,7 @@ public class DjangoUser {
                 }
             }
         } catch (IOException e) {
-            logger.severe("Неудалось подключиться к сайту");
+            logger.severe("Не удалось подключиться к сайту");
         }
         return token;
     }
@@ -241,19 +250,23 @@ public class DjangoUser {
                 sj.append(inputLine);
             }
             br.close();
+            setInternetConnectionErrorStatus(false);
         } catch (IOException e) {
             sj = new StringBuilder();
-            try {
-                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-                String inputLine;
-                while ((inputLine = br.readLine()) != null) {
-                    sj.append(inputLine);
-                }
-                br.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            e.printStackTrace();
+            System.out.println("Internet connection error");
+            setInternetConnectionErrorStatus(true);
+//            try {
+//
+//                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+//                String inputLine;
+//                while ((inputLine = br.readLine()) != null) {
+//                    sj.append(inputLine);
+//                }
+//                br.close();
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
+//            e.printStackTrace();
         }
         return sj.toString();
     }

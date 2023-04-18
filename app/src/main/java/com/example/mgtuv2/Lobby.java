@@ -27,23 +27,29 @@ public class Lobby extends AppCompatActivity {
 
     static TextView QRCodeTextOutput;
     Button buttonRefreshQrCode;
-
+    TextView lobbyTextAccessStatus;
     static ImageView QrCodeImageOutput;
 
     SharedPreferences sPref;
     @Override
-    //Функция создания лобби. Надо сделать проверку на разрешение доступа
     protected void onCreate(Bundle savedInstanceState)
     {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_lobby);
 
-        //random letter generator
+        lobbyTextAccessStatus=findViewById(R.id.lobbyTextAccessStatus);
+
         QRCodeTextOutput=findViewById(R.id.QRCodeTextOutput);
         buttonRefreshQrCode =findViewById(R.id.buttonRefreshQrCode);
-        //qrcode generator
         QrCodeImageOutput = findViewById(R.id.QrCodeImageOutput);
+
+        if (djangoUser.getInternetConnectionErrorStatus()){
+            System.out.println("lobby internet error no button pressed");
+            lobbyTextAccessStatus.setText("no internet");
+        }
+        else{
+            lobbyTextAccessStatus.setText("Разрешен");
+        }
         showQRCodeUI();
 
         buttonRefreshQrCode.setOnClickListener(new View.OnClickListener() {

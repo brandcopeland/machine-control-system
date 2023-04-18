@@ -33,14 +33,14 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
                 djangoUser = new DjangoUser("https://k7scm.site/");
                 djangoUser.auth(loginPage.getLoginString(), loginPage.getPasswordString());
             } else {
-                System.out.println("do set ");
+                //System.out.println("do set ");
                 djangoUser = new DjangoUser("https://k7scm.site/", loginPage.getCsrfTokenFromFiles(), loginPage.getSessionIdFromFiles());
-                System.out.println("posle set ");
+                //System.out.println("posle set ");
             }
         } else { // вход через регенерацию
-            System.out.println("do set ");
+            //System.out.println("do set ");
             djangoUser = new DjangoUser("https://k7scm.site/", lobby.getCsrfTokenFromFiles(), lobby.getSessionIdFromFiles());
-            System.out.println("posle set ");
+            //System.out.println("posle set ");
         }
         System.out.println("CSRF: ");
         System.out.println(djangoUser.getCsrfToken());
@@ -62,11 +62,11 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
-        System.out.println(response);
+//        System.out.println(response);
+//        System.out.println("response session id:");
+        System.out.println(djangoUser.getSessionId());
         if (!(loginPage == null)) {
             if (djangoUser.getSessionId().isEmpty()) {
-                //Lobby.getQRCodeTextOutput().setText("Ошибка авторизации");
-                //Lobby.setQRCodeImageOutput("Error");
                 Toast.makeText(loginPage, "Authentication failed", Toast.LENGTH_SHORT).show();
                 loginPage.setStatusIsNeedAuth(false);
                 loginPage.loginErrorUiChange();
@@ -82,6 +82,13 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
                 Intent intent = new Intent(lobby, LoginPage.class);
                 lobby.startActivity(intent);
             } else {
+                if (djangoUser.getInternetConnectionErrorStatus()){
+                    System.out.println("lobby internet error if button pressed");
+                    lobby.lobbyTextAccessStatus.setText("no internet");
+               }
+                else{
+                    lobby.lobbyTextAccessStatus.setText("Разрешен");
+                }
                 lobby.showQRCodeUI();
                 lobby.setStatusIsNeedAuth(true);
             }

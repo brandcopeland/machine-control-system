@@ -42,16 +42,14 @@ public class LoginPage extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         loadingCircle = findViewById(R.id.loadingCircle);
 
-        if (isNeedAutoAuth() == true) {
+        if (isNeedAutoAuth()) {
             //setSessionIdCsrfFromFiles();
             loginButtonOnClickUiChange();
 
             AuthUserTask AUR = new AuthUserTask(LoginPage.this);
             AUR.execute();
         }
-//        else {
-//            inputPassword.setText("noneedinauth");
-//        }
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,6 +68,12 @@ public class LoginPage extends AppCompatActivity {
 
 
     public void loginErrorUiChange(){
+        if (djangoUser.getInternetConnectionErrorStatus()){
+            textErrorLogin.setText(getResources().getString(R.string.loginErrorInternet));
+        }
+        else{
+            textErrorLogin.setText(getResources().getString(R.string.loginErrorCommon));
+        }
         if (textErrorLogin.getVisibility() == View.INVISIBLE)
         {
             textErrorLogin.setVisibility(View.VISIBLE);
