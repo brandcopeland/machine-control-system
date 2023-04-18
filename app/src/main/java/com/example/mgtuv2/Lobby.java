@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ public class Lobby extends AppCompatActivity {
     Button buttonRefreshQrCode;
     TextView lobbyTextAccessStatus;
     static ImageView QrCodeImageOutput;
+    ProgressBar progressBar;
 
     SharedPreferences sPref;
     @Override
@@ -38,10 +41,10 @@ public class Lobby extends AppCompatActivity {
         setContentView(R.layout.activity_main_lobby);
 
         lobbyTextAccessStatus=findViewById(R.id.lobbyTextAccessStatus);
-
         QRCodeTextOutput=findViewById(R.id.QRCodeTextOutput);
         buttonRefreshQrCode =findViewById(R.id.buttonRefreshQrCode);
         QrCodeImageOutput = findViewById(R.id.QrCodeImageOutput);
+        progressBar = findViewById(R.id.progressBar);
 
         if (djangoUser.getInternetConnectionErrorStatus()){
             System.out.println("lobby internet error no button pressed");
@@ -58,14 +61,31 @@ public class Lobby extends AppCompatActivity {
             {
                 AuthUserTask AUR = new AuthUserTask(Lobby.this);
                 AUR.execute();
-                //showQRCodeUI();
             }
         });
 
 
     }
 
-    //Функция выхода из учетки. Можно вызывать когда юзер выходит по кнопке, либо истек срок проверки в базе данных
+    public void startTimer(long inputTime){
+        int maxTime = (Integer.parseInt(djangoUser.getTimeExpire())-Integer.parseInt(djangoUser.getTimeStart()))/100;
+        buttonRefreshQrCode.setEnabled(false);
+        new CountDownTimer(inputTime*1000, 1000) {
+
+            public void onTick(long l) {
+                getQRCodeTextOutput().setText(" " + l/ 1000);
+                progressBar.setProgress((int) l/1000/maxTime);
+            }
+
+            public void onFinish() {
+                getQRCodeTextOutput().setText("QR код истёк");
+                lobbyTextAccessStatus.setText("Запрещен");
+                buttonRefreshQrCode.setEnabled(true);
+            }
+        }.start();
+    }
+
+
     public void unlogin(View view)
     {
         setStatusIsNeedAuth(false);
@@ -86,12 +106,18 @@ public class Lobby extends AppCompatActivity {
     public void showQRCodeUI(){
 
         djangoUser.setupQrCodeAndTimeRange();
-        Lobby.getQRCodeTextOutput().setText(String.format("%s\n%s",
-                djangoUser.getQrCode(),
-                Lobby.timestampToTimeString(djangoUser.getTimeExpire())));
-        System.out.println("qr code");
-        System.out.println(djangoUser.getQrCode());
+//        Lobby.getQRCodeTextOutput().setText(String.format("%s\n%s",
+//                djangoUser.getQrCode(),
+//                Lobby.timestampToTimeString(djangoUser.getTimeExpire())));
+//        System.out.println("qr code");
+//        System.out.println(djangoUser.getQrCode());
+//
         Lobby.setQRCodeImageOutput(djangoUser.getQrCode());
+        long timestamp = new Date().getTime();
+        System.out.println(timestamp);
+        System.out.println(Long.parseLong(djangoUser.getTimeExpire()));
+        startTimer(Long.parseLong(djangoUser.getTimeExpire())-timestamp/1000);
+
     }
 
     public static void setQRCodeImageOutput(String inputString){
