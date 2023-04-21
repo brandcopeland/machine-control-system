@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="mgtu_blue">#1667DE</color>
+    <color name="access_green">#47CF4D</color>
+    <color name="access_red">#FFFF2C2C</color>
 </resources>

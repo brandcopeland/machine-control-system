@@ -84,12 +84,13 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
             } else {
                 if (djangoUser.getInternetConnectionErrorStatus()){
                     System.out.println("lobby internet error if button pressed");
-                    lobby.lobbyTextAccessStatus.setText("no internet");
+                    lobby.qrNoInternetUI();
                }
                 else{
-                    lobby.lobbyTextAccessStatus.setText("Разрешен");
+                    lobby.qrAccessUI();
+                    lobby.showQRCodeUI();
                 }
-                lobby.showQRCodeUI();
+
                 lobby.setStatusIsNeedAuth(true);
             }
         }

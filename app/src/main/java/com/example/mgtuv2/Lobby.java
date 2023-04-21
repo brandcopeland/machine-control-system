@@ -48,12 +48,13 @@ public class Lobby extends AppCompatActivity {
 
         if (djangoUser.getInternetConnectionErrorStatus()){
             System.out.println("lobby internet error no button pressed");
-            lobbyTextAccessStatus.setText("no internet");
+            qrNoInternetUI();
         }
         else{
-            lobbyTextAccessStatus.setText("Разрешен");
+            qrAccessUI();
+            showQRCodeUI();
         }
-        showQRCodeUI();
+
 
         buttonRefreshQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,12 +80,26 @@ public class Lobby extends AppCompatActivity {
 
             public void onFinish() {
                 getQRCodeTextOutput().setText("QR код истёк");
-                lobbyTextAccessStatus.setText("Запрещен");
+                qrNoAccessUI();
                 buttonRefreshQrCode.setEnabled(true);
             }
         }.start();
     }
 
+    public void qrNoAccessUI(){
+        lobbyTextAccessStatus.setText("Доступ запрещен");
+        lobbyTextAccessStatus.setTextColor(getResources().getColor(R.color.access_red));
+    }
+
+    public void qrNoInternetUI(){
+        lobbyTextAccessStatus.setText("Нет подключения к интернету");
+        lobbyTextAccessStatus.setTextColor(getResources().getColor(R.color.access_red));
+    }
+
+    public void qrAccessUI(){
+        lobbyTextAccessStatus.setText("Доступ разрешен");
+        lobbyTextAccessStatus.setTextColor(getResources().getColor(R.color.access_green));
+    }
 
     public void unlogin(View view)
     {
