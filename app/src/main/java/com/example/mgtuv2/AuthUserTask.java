@@ -49,6 +49,10 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
         System.out.println("ReceivedQrCodeAndTimestamp : ");
         System.out.println(djangoUser.getReceivedQrCodeAndTimestamp());
 
+        djangoUser.getCurrentTime();
+        System.out.println("CurrentTime : ");
+        System.out.println(djangoUser.currentTime);
+
         HttpURLConnection conn = djangoUser.getRequest("api/qr");
 
         //djangoUser.getBody(conn) - Это QRcode + timestamp в ввиде JSON

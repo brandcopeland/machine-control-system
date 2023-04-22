@@ -299,6 +299,24 @@ public class DjangoUser {
         return conn;
     }
 
+    public long currentTime;
+
+
+
+    public void getCurrentTime() {
+        try {
+            URL url = new URL("https://www.google.com/");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("HEAD");
+            connection.connect();
+            long serverTime = connection.getDate();
+            connection.disconnect();
+            currentTime = serverTime;
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+    }
 
     public HttpURLConnection getRequest(String address) {
         return getRequest(address, Collections.emptyMap());

@@ -32,6 +32,7 @@ public class Lobby extends AppCompatActivity {
     TextView lobbyTextAccessStatus;
     static ImageView QrCodeImageOutput;
     ProgressBar progressBar;
+    CountDownTimer  timer;
 
     SharedPreferences sPref;
     @Override
@@ -71,11 +72,12 @@ public class Lobby extends AppCompatActivity {
     public void startTimer(long inputTime){
         int maxTime = (Integer.parseInt(djangoUser.getTimeExpire())-Integer.parseInt(djangoUser.getTimeStart()))/100;
         buttonRefreshQrCode.setEnabled(false);
-        new CountDownTimer(inputTime*1000, 1000) {
+        timer = new CountDownTimer(inputTime*1000, 1000) {
 
             public void onTick(long l) {
                 getQRCodeTextOutput().setText(" " + l/ 1000);
                 progressBar.setProgress((int) l/1000/maxTime);
+
             }
 
             public void onFinish() {
@@ -83,11 +85,12 @@ public class Lobby extends AppCompatActivity {
                 qrNoAccessUI();
                 buttonRefreshQrCode.setEnabled(true);
             }
-        }.start();
+        };
+        timer.start();
     }
 
     public void qrNoAccessUI(){
-        lobbyTextAccessStatus.setText("Доступ запрещен");
+        lobbyTextAccessStatus.setText("QR код не работает");
         lobbyTextAccessStatus.setTextColor(getResources().getColor(R.color.access_red));
     }
 
@@ -97,12 +100,13 @@ public class Lobby extends AppCompatActivity {
     }
 
     public void qrAccessUI(){
-        lobbyTextAccessStatus.setText("Доступ разрешен");
+        lobbyTextAccessStatus.setText("QR код  работает");
         lobbyTextAccessStatus.setTextColor(getResources().getColor(R.color.access_green));
     }
 
     public void unlogin(View view)
     {
+        timer.cancel();
         setStatusIsNeedAuth(false);
         DjangoUser.resetSessionId();
         Toast.makeText(Lobby.this, "UNLOGIN SUCCESSFULL",Toast.LENGTH_SHORT).show();
@@ -128,7 +132,7 @@ public class Lobby extends AppCompatActivity {
 //        System.out.println(djangoUser.getQrCode());
 //
         Lobby.setQRCodeImageOutput(djangoUser.getQrCode());
-        long timestamp = new Date().getTime();
+        long timestamp = djangoUser.currentTime;
         System.out.println(timestamp);
         System.out.println(Long.parseLong(djangoUser.getTimeExpire()));
         startTimer(Long.parseLong(djangoUser.getTimeExpire())-timestamp/1000);
