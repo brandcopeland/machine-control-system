@@ -82,7 +82,8 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/loginPageTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoImage" />
 
     <ProgressBar
         android:id="@+id/loadingCircle"
@@ -104,8 +105,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo_image"
-        tools:srcCompat="@drawable/logo_image" />
+        app:layout_constraintVertical_bias="0.100000024"
+        app:srcCompat="@drawable/logot"
+        tools:srcCompat="@drawable/logot" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
