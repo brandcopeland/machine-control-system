@@ -1,10 +1,6 @@
 package com.example.mgtuv2;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 
 import org.json.JSONException;
@@ -25,9 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
-
+//Вспомогательный класс для авторизации и хранения данных об авторизации юзера
 public class DjangoUser {
-   private final Logger logger = Logger.getLogger("DjangoUser");
+   private final Logger logger = Logger.getLogger("DjangoUser"); //Вспомогательная библиотека для отслеживания ошибок
 
     private final String siteAddress;
     private String csrfToken = "";
@@ -45,10 +41,9 @@ public class DjangoUser {
     //Convert JSON String with QrCode and Timestamps to class variables
     public void setupQrCodeAndTimeRange(){
         try {
-
-            String jsonString = receivedQrCodeAndTimestamp; // здесь строка JSON
-            JSONObject jsonObject = new JSONObject(jsonString); // создаем объект JSON из строки
-            String QrCodeFromJSON = jsonObject.getString("code"); // получаем QR Code из JSON
+            String jsonString = receivedQrCodeAndTimestamp;
+            JSONObject jsonObject = new JSONObject(jsonString);
+            String QrCodeFromJSON = jsonObject.getString("code");
             String time_start = jsonObject.getString("time_start");
             String time_expire = jsonObject.getString("time_expire");
             QrCode = QrCodeFromJSON;
@@ -91,6 +86,7 @@ public class DjangoUser {
 
     private final String loginUrl;
 
+    //Конструктор без наличия уже готовых csrf/session id
     public DjangoUser(String siteAddress) {
         if (siteAddress.endsWith("/")) {
             siteAddress = siteAddress.substring(0, siteAddress.length() - 1);
@@ -100,7 +96,7 @@ public class DjangoUser {
 
         setupCSRF();
     }
-
+    //Конструктор с наличием уже готовых csrf/session id
     public DjangoUser(String siteAddress, String csrfToken, String sessionId) {
         if (siteAddress.endsWith("/")) {
             siteAddress = siteAddress.substring(0, siteAddress.length() - 1);
@@ -113,6 +109,7 @@ public class DjangoUser {
         this.loginUrl = siteAddress + "/login/";
     }
 
+    //Функция авторизации на сайте через POST запрос с помощью логина и пароля
     public void auth(String username, String password) {
         try {
             URL url = new URL(this.loginUrl);
@@ -165,10 +162,8 @@ public class DjangoUser {
             } else {
                 assert sessionId != null;
                 if (sessionId.isEmpty()) {
-                    logger.severe("sessionId отсутствует"); //Все равно что логин пароль неверный
-
+                    logger.severe("sessionId отсутствует"); //Все равно что логин/пароль неверный
                 } else {
-
                     setupCookies();
                 }
             }
@@ -182,7 +177,7 @@ public class DjangoUser {
     private void setupCSRF() {
         this.csrfToken = getCSRF();
     }
-
+    //Функция получения первичного CSRF через GET запрос к login странице
     private String getCSRF() {
         String token = "";
         try {
@@ -205,7 +200,7 @@ public class DjangoUser {
         }
         return token;
     }
-
+    //Функция преобразует полученные куки файлы с сайта в map (Просто вспомогательная функция)
     public Map<String, String> cookieToMap(String cookies) {
         Map<String, String> cookieMap = new HashMap<>();
         for (String cookie : cookies.split(";")) {
@@ -216,8 +211,8 @@ public class DjangoUser {
         }
         return cookieMap;
     }
-
-    public String getCSRFTokenFromCookie(String cookie) {
+    //Получение CSRF из куки (Просто вспомогательная функция)
+       public String getCSRFTokenFromCookie(String cookie) {
         Map<String, String> cookies = cookieToMap(cookie);
         if (cookies.containsKey("csrftoken")) {
             return cookies.get("csrftoken");
@@ -255,26 +250,14 @@ public class DjangoUser {
             sj = new StringBuilder();
             System.out.println("Internet connection error");
             setInternetConnectionErrorStatus(true);
-//            try {
-//
-//                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-//                String inputLine;
-//                while ((inputLine = br.readLine()) != null) {
-//                    sj.append(inputLine);
-//                }
-//                br.close();
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
-//            e.printStackTrace();
         }
         return sj.toString();
     }
-
+    //Функция POST-запроса по адрессу (Просто вспомогательная функция) (Legacy)
     public HttpURLConnection postRequest(String address) {
         return postRequest(address, Collections.emptyMap());
     }
-
+    //Функция POST-запроса по адрессу и параметрам запроса (Просто вспомогательная функция)
     public HttpURLConnection postRequest(String address, Map<String, String> params) {
         HttpURLConnection conn = null;
         address = "/" + formatAddress(address);
@@ -302,7 +285,7 @@ public class DjangoUser {
     public long currentTime;
 
 
-
+    //Get current irl time
     public void getCurrentTime() {
         try {
             URL url = new URL("https://www.google.com/");
@@ -317,11 +300,11 @@ public class DjangoUser {
 
         }
     }
-
+    //Функция get запроса по адрессу (Просто вспомогательная функция)
     public HttpURLConnection getRequest(String address) {
         return getRequest(address, Collections.emptyMap());
     }
-
+    //Функция get запроса по адрессу и параметрам (Просто вспомогательная функция)
     public HttpURLConnection getRequest(String address, Map<String, String> params) {
         HttpURLConnection conn = null;
         address = "/" + formatAddress(address);
@@ -387,7 +370,7 @@ public class DjangoUser {
         this.djangoCookieHeader = generateCookieHeader(djangoCookies);
     }
 
-
+    //Вспомогательный класс для создания параметров POST-запроса
     private static class PostData {
         public byte[] bytes;
         public String length;
@@ -422,7 +405,7 @@ public class DjangoUser {
             return new PostData(postDataBytes, postDataLength);
         }
 
-
+        //Вспомогательна функция для определения равности объектов cookie (Legacy)
         @Override
         public boolean equals(Object o) {
             if (this == o) {

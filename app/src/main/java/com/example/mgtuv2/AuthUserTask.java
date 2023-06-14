@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import java.net.HttpURLConnection;
-
+//Вспомогательный класс асинхронной авторизации
 public class AuthUserTask extends AsyncTask<Void, Void, String> {
     @SuppressLint("StaticFieldLeak")
     private LoginPage loginPage = null;
@@ -33,14 +33,10 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
                 djangoUser = new DjangoUser("https://k7scm.site/");
                 djangoUser.auth(loginPage.getLoginString(), loginPage.getPasswordString());
             } else {
-                //System.out.println("do set ");
                 djangoUser = new DjangoUser("https://k7scm.site/", loginPage.getCsrfTokenFromFiles(), loginPage.getSessionIdFromFiles());
-                //System.out.println("posle set ");
             }
         } else { // вход через регенерацию
-            //System.out.println("do set ");
             djangoUser = new DjangoUser("https://k7scm.site/", lobby.getCsrfTokenFromFiles(), lobby.getSessionIdFromFiles());
-            //System.out.println("posle set ");
         }
         System.out.println("CSRF: ");
         System.out.println(djangoUser.getCsrfToken());
@@ -66,8 +62,6 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
-//        System.out.println(response);
-//        System.out.println("response session id:");
         System.out.println(djangoUser.getSessionId());
         if (!(loginPage == null)) {
             if (djangoUser.getSessionId().isEmpty()) {

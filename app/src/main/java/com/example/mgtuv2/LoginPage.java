@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
+//Класс страницы логина
 public class LoginPage extends AppCompatActivity {
 
     TextView loginPageTitle;
@@ -28,8 +28,6 @@ public class LoginPage extends AppCompatActivity {
     final String savedCsrf = "savedCsrf";
     final Boolean isNeedAuth = false;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +41,6 @@ public class LoginPage extends AppCompatActivity {
         loadingCircle = findViewById(R.id.loadingCircle);
 
         if (isNeedAutoAuth()) {
-            //setSessionIdCsrfFromFiles();
             loginButtonOnClickUiChange();
 
             AuthUserTask AUR = new AuthUserTask(LoginPage.this);
@@ -65,8 +62,7 @@ public class LoginPage extends AppCompatActivity {
 
     }
 
-
-
+    //Функция изменения UI при выдаче ошибки
     public void loginErrorUiChange(){
         if (djangoUser.getInternetConnectionErrorStatus()){
             textErrorLogin.setText(getResources().getString(R.string.loginErrorInternet));
@@ -81,14 +77,14 @@ public class LoginPage extends AppCompatActivity {
         loginButton.setEnabled(true);
         loadingCircle.setVisibility(View.INVISIBLE);
     }
-
+    //Изменения UI при нажатии кнопки логина
     public void loginButtonOnClickUiChange(){
         textErrorLogin.setVisibility(View.INVISIBLE);
         loginButton.setEnabled(false);
         loadingCircle.setVisibility(View.VISIBLE);
 
     }
-
+    //Получение логина и пароля из input-полей
     public String getLoginString() {
         return inputLogin.getText().toString();
     }
@@ -96,7 +92,7 @@ public class LoginPage extends AppCompatActivity {
     public String getPasswordString() {
         return inputPassword.getText().toString();
     }
-
+    //Сохранение sessionID в файлы
     public void saveSessionIdCsrfInFiles() {
         sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
@@ -104,34 +100,24 @@ public class LoginPage extends AppCompatActivity {
         ed.putString(savedCsrf, djangoUser.getCsrfToken());
         ed.apply();
    }
-
-//    public void setSessionIdCsrfFromFiles() {
-//        sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
-//        String savedSessionIdTemp = sPref.getString("savedSessionId", "");
-//        String savedCsrfTemp = sPref.getString("savedCsrf", "");
-//        djangoUser.setSessionId(savedSessionIdTemp);
-//        djangoUser.setCsrfToken(savedCsrfTemp);
-////        inputLogin.setText(savedSessionIdTemp);
-////        inputPassword.setText(savedCsrfTemp);
-//    }
-
+    //Получение sessionID из файлов
     public String getSessionIdFromFiles(){
         sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
         String savedSessionIdTemp = sPref.getString("savedSessionId", "");
         return savedSessionIdTemp;
     }
-
+    //Получение csrf token из файлов
     public String getCsrfTokenFromFiles(){
         sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
         String savedCsrfTemp = sPref.getString("savedCsrf", "");
         return savedCsrfTemp;
     }
-
+    //bool функция на проверку, нужен ли автоматическая авторизация (Если юзер уже был залогинен в систему)
     public Boolean isNeedAutoAuth(){
         sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
         return sPref.getBoolean("isNeedAuth", false);
     }
-
+    //Установка статуса автологина
     public void setStatusIsNeedAuth(Boolean inputBoolean){
         sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
