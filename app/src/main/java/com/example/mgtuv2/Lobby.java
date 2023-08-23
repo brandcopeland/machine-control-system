@@ -52,6 +52,7 @@ public class Lobby extends AppCompatActivity {
             qrNoInternetUI();
         }
         else{
+            System.out.println("checkpoint 6");
             qrAccessUI();
             showQRCodeUI();
         }

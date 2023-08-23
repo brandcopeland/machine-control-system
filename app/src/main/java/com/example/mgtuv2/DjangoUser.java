@@ -104,8 +104,9 @@ public class DjangoUser {
         this.siteAddress = siteAddress;
         this.csrfToken = csrfToken;
         DjangoUser.sessionId = sessionId;
+        System.out.println("checkpoint 1");
         setupCookies();
-
+        System.out.println("checkpoint 2");
         this.loginUrl = siteAddress + "/login/";
     }
 
