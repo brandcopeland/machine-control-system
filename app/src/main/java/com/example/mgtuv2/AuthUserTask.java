@@ -62,13 +62,22 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
+        System.out.println("checkpoint 3");
         System.out.println(djangoUser.getSessionId());
         if (!(loginPage == null)) {
+            System.out.println("checkpoint 7");
             if (djangoUser.getSessionId().isEmpty()) {
+                System.out.println("checkpoint 8");
                 Toast.makeText(loginPage, "Authentication failed", Toast.LENGTH_SHORT).show();
                 loginPage.setStatusIsNeedAuth(false);
                 loginPage.loginErrorUiChange();
-            } else {
+            } else if (djangoUser.getReceivedQrCodeAndTimestamp().isEmpty()) { //Если истек csrf, то выкидываем на логин пейдж
+                System.out.println("checkpoint 9");
+                Toast.makeText(loginPage, "Token expired", Toast.LENGTH_SHORT).show();
+                loginPage.setStatusIsNeedAuth(false);
+                loginPage.loginErrorUiChange();
+            }
+            else {
                 loginPage.saveSessionIdCsrfInFiles();
                 loginPage.setStatusIsNeedAuth(true);
                 Intent intent = new Intent(loginPage, Lobby.class);
@@ -76,6 +85,12 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
             }
         } else {//регенерация через лобби
             if (djangoUser.getSessionId().isEmpty()) {
+                System.out.println("checkpoint 4");
+                {if (djangoUser.getReceivedQrCodeAndTimestamp().isEmpty()){
+                    System.out.println("checkpoint 5");
+                }}
+
+
                 lobby.setStatusIsNeedAuth(false);
                 Intent intent = new Intent(lobby, LoginPage.class);
                 lobby.startActivity(intent);
