@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Lobby">
+    tools:context=".LobbyHomeFragment">
 
     <TextView
         android:id="@+id/lobbyTextAccessStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Разрешен"
+        android:text="Разрешен default"
         android:textColor="#47CF4D"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -20,17 +20,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.8" />
 
-    <Button
-        android:id="@+id/unloginButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50sp"
-        android:onClick="unlogin"
-        android:text="Выйти из аккаунта"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="HardcodedText" />
 
     <ImageView
         android:id="@+id/QrCodeImageOutput"
@@ -60,9 +49,10 @@
         android:id="@+id/buttonRefreshQrCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="64dp"
+
         android:text="Запросить QR код заново"
-        app:layout_constraintBottom_toTopOf="@+id/unloginButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

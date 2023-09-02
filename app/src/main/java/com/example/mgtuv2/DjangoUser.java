@@ -27,7 +27,31 @@ public class DjangoUser {
 
     private final String siteAddress;
     private String csrfToken = "";
-    private static String sessionId = "";
+    public String getCsrfToken() {
+        return csrfToken;
+    }
+    public void setCsrfToken(String inputCsrfToken){
+        csrfToken = inputCsrfToken;
+    }
+
+    private String sessionId = "";
+    public String getSessionId() {
+        return sessionId;
+    }
+    public void setSessionId(String inputSessionId){
+        sessionId = inputSessionId;
+    }
+    public void resetSessionId(){
+        sessionId = "";
+    }
+
+
+    //JSON String of received accessed Devices list
+    private String receivedDevicesList = "";
+    public String getReceivedDevicesList(){return receivedDevicesList;}
+    public void setReceivedDevicesList(String inputReceivedDevicesList){
+        receivedDevicesList = inputReceivedDevicesList;
+    }
 
     //JSON String QrCode and timestamp полученные
     private String receivedQrCodeAndTimestamp = "";
@@ -36,12 +60,13 @@ public class DjangoUser {
     }
     public void setReceivedQrCodeAndTimestamp(String inputQrCodeAndTimestamp) {
         receivedQrCodeAndTimestamp = inputQrCodeAndTimestamp;
+        setupQrCodeAndTimeRange();
     }
 
     //Convert JSON String with QrCode and Timestamps to class variables
     public void setupQrCodeAndTimeRange(){
         try {
-            String jsonString = receivedQrCodeAndTimestamp;
+            String jsonString = getReceivedQrCodeAndTimestamp();
             JSONObject jsonObject = new JSONObject(jsonString);
             String QrCodeFromJSON = jsonObject.getString("code");
             String time_start = jsonObject.getString("time_start");
@@ -54,6 +79,7 @@ public class DjangoUser {
         }
     }
 
+
     //QrCode String
     private String QrCode = "";
     public String getQrCode(){
@@ -64,8 +90,8 @@ public class DjangoUser {
     }
 
     //timeStart String
-    private static String timeStart = "";
-    public static String getTimeStart(){ return timeStart; }
+    private String timeStart = "";
+    public String getTimeStart(){ return timeStart; }
     public void setTimeStart(String inputTimeStart){ timeStart = inputTimeStart; }
 
     //timeExpire String
@@ -82,8 +108,9 @@ public class DjangoUser {
         internetConnectionErrorStatus = status;
     }
 
-    private String djangoCookieHeader = "";
 
+
+    private String djangoCookieHeader = "";
     private final String loginUrl;
 
     //Конструктор без наличия уже готовых csrf/session id
@@ -103,10 +130,8 @@ public class DjangoUser {
         }
         this.siteAddress = siteAddress;
         this.csrfToken = csrfToken;
-        DjangoUser.sessionId = sessionId;
-        System.out.println("checkpoint 1");
+        this.sessionId = sessionId;
         setupCookies();
-        System.out.println("checkpoint 2");
         this.loginUrl = siteAddress + "/login/";
     }
 
@@ -338,23 +363,6 @@ public class DjangoUser {
             address = address.substring(0, address.length() - 1);
         }
         return address;
-    }
-
-    public String getCsrfToken() {
-        return csrfToken;
-    }
-    public void setCsrfToken(String inputCsrfToken){
-        csrfToken = inputCsrfToken;
-    }
-
-    public String getSessionId() {
-        return sessionId;
-    }
-    public void setSessionId(String inputSessionId){
-        sessionId = inputSessionId;
-    }
-    public static void resetSessionId(){
-        sessionId = "";
     }
 
 

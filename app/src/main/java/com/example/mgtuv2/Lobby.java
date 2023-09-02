@@ -1,166 +1,107 @@
 package com.example.mgtuv2;
 
-import static com.example.mgtuv2.AuthUserTask.djangoUser;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidmads.library.qrgenearator.QRGContents;
-import androidmads.library.qrgenearator.QRGEncoder;
-
-//Класс страницы лобби
-public class Lobby extends AppCompatActivity {
-
-    static TextView QRCodeTextOutput;
-    Button buttonRefreshQrCode;
-    TextView lobbyTextAccessStatus;
-    static ImageView QrCodeImageOutput;
-    ProgressBar progressBar;
-    CountDownTimer  timer;
-
+//Класс активности лобби
+public class Lobby extends AppCompatActivity  {
     SharedPreferences sPref;
+    //Создаем 3 фрагмента при инициализации класса
+    LobbyHomeFragment homeFragment = new LobbyHomeFragment();
+    LobbyDevicesFragment devicesFragment = new LobbyDevicesFragment();
+    LobbySettingsFragment settingsFragment = new LobbySettingsFragment();
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(Bundle savedInstanceState) //Запуск лобби приложения, по сути только система смены фрагментов
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_lobby);
+        setContentView(R.layout.activity_lobby);
 
-        lobbyTextAccessStatus=findViewById(R.id.lobbyTextAccessStatus);
-        QRCodeTextOutput=findViewById(R.id.QRCodeTextOutput);
-        buttonRefreshQrCode =findViewById(R.id.buttonRefreshQrCode);
-        QrCodeImageOutput = findViewById(R.id.QrCodeImageOutput);
-        progressBar = findViewById(R.id.progressBar);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        //Добавляем 3 фрагмента на экран и прячем 2 из них
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.frame_layout, homeFragment, "homeFragmentTag");
+        transaction.add(R.id.frame_layout, devicesFragment, "devicesFragmentTag");
+        transaction.add(R.id.frame_layout, settingsFragment, "Fragment3Tag");
+        transaction.hide(devicesFragment);
+        transaction.hide(settingsFragment);
+        transaction.commit();
+        bottomNavigationView.getMenu().findItem(R.id.home).setChecked(true);
+        //Активируем переключатель фрагментов через меню навигации
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            FragmentTransaction tempTransaction = getSupportFragmentManager().beginTransaction();
 
-        if (djangoUser.getInternetConnectionErrorStatus()){
-            System.out.println("lobby internet error no button pressed");
-            qrNoInternetUI();
-        }
-        else{
-            System.out.println("checkpoint 6");
-            qrAccessUI();
-            showQRCodeUI();
-        }
-
-
-        buttonRefreshQrCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                AuthUserTask AUR = new AuthUserTask(Lobby.this);
-                AUR.execute();
+            switch (item.getItemId()) {
+                case R.id.home:
+                    hideAllFragments(tempTransaction);
+                    selectedFragment = homeFragment;
+                    break;
+                case R.id.devices:
+                    hideAllFragments(tempTransaction);
+                    selectedFragment = devicesFragment;
+                    break;
+                case R.id.settings:
+                    hideAllFragments(tempTransaction);
+                    selectedFragment = settingsFragment;
+                    break;
             }
+
+            if (selectedFragment != null) {
+                if (selectedFragment.isAdded()) {
+                    tempTransaction.show(selectedFragment);
+                } else {
+                    tempTransaction.add(R.id.frame_layout, selectedFragment);
+                }
+                tempTransaction.commit();
+            }
+            return true;
         });
-
-
     }
-    //Функция запуска таймера
-    public void startTimer(long inputTime){
-        int maxTime = (Integer.parseInt(djangoUser.getTimeExpire())-Integer.parseInt(djangoUser.getTimeStart()))/100;
-        buttonRefreshQrCode.setEnabled(false);
-        timer = new CountDownTimer(inputTime*1000, 1000) {
 
-            public void onTick(long l) {
-                getQRCodeTextOutput().setText(" " + l/ 1000);
-                progressBar.setProgress((int) l/1000/maxTime);
+    // Функция скрывает все фрагменты, которые могут быть видны в данный момент
+    void hideAllFragments(FragmentTransaction transaction) {
 
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            if (fragment != null) {
+                transaction.hide(fragment);
             }
+        }
+    }
 
-            public void onFinish() {
-                getQRCodeTextOutput().setText("QR код истёк");
-                qrNoAccessUI();
-                buttonRefreshQrCode.setEnabled(true);
-            }
-        };
-        timer.start();
-    }
-    //Функция изменения UI если QR истек или не работает
-    public void qrNoAccessUI(){
-        lobbyTextAccessStatus.setText("QR код не работает");
-        lobbyTextAccessStatus.setTextColor(getResources().getColor(R.color.access_red));
-    }
-    //Функция изменения UI если нет интернета
-    public void qrNoInternetUI(){
-        lobbyTextAccessStatus.setText("Нет подключения к интернету");
-        lobbyTextAccessStatus.setTextColor(getResources().getColor(R.color.access_red));
-    }
-    //Функция изменения UI если QR работает
-    public void qrAccessUI(){
-        lobbyTextAccessStatus.setText("QR код  работает");
-        lobbyTextAccessStatus.setTextColor(getResources().getColor(R.color.access_green));
-    }
     //Функция выхода из аккаунта / перехода на страницу логина
-    public void unlogin(View view)
+    public void unlogin()
     {
-        timer.cancel();
-        setStatusIsNeedAuth(false);
-        DjangoUser.resetSessionId();
+        homeFragment.timer.cancel();
+        setStatusIsNeedAutoAuth(false);
         Toast.makeText(Lobby.this, "UNLOGIN SUCCESSFULL",Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, LoginPage.class);
         startActivity(intent);
     }
-    //Функция генерации изображения QR кода из строки
-    public static Bitmap generateQrCodeImage(String password)
-    {
-        QRGEncoder qrgEncoder = new QRGEncoder(password,null, QRGContents.Type.TEXT,512);
-        // Getting QR-Code as Bitmap
 
-        return qrgEncoder.getBitmap(0);
-    }
-    //Функция изменения UI (Показ изображения QR)
-    public void showQRCodeUI(){
-        djangoUser.setupQrCodeAndTimeRange();
-        Lobby.setQRCodeImageOutput(djangoUser.getQrCode());
-        long timestamp = djangoUser.currentTime;
-        System.out.println(timestamp);
-        System.out.println(Long.parseLong(djangoUser.getTimeExpire()));
-        startTimer(Long.parseLong(djangoUser.getTimeExpire())-timestamp/1000);
-    }
-    //Функция изменения UI (Показ изображения QR) (Вспомогательная функция)
-    public static void setQRCodeImageOutput(String inputString){
-        QrCodeImageOutput.setImageBitmap(generateQrCodeImage(inputString));
-    }
-    //Получение текстового поля под Qr кодом
-    public static TextView getQRCodeTextOutput() {
-        return QRCodeTextOutput;
-    }
-    //timestamp в строку отображения времени
-    public static String timestampToTimeString(String timestamp){
-        if (timestamp.equals("")) {
-            return "";
-        }
-        long timestampSeconds = Long.parseLong(timestamp);
-        Date date = new Date(timestampSeconds * 1000L);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        sdf.setTimeZone(TimeZone.getDefault());
-        return sdf.format(date);
-    }
     //Сохранения статуса необходимости автоматической авторизации
-    public void setStatusIsNeedAuth(Boolean inputBoolean){
+    public void setStatusIsNeedAutoAuth(Boolean inputBoolean){
         sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
-        ed.putBoolean("isNeedAuth", inputBoolean);
+        ed.putBoolean("isNeedAutoAuth", inputBoolean);
         ed.apply();
     }
     //Получение статуса необходимости автоматической авторизации
     public Boolean isNeedAutoAuth(){
         sPref = getSharedPreferences("savedSessionIdCsrf", MODE_PRIVATE);
-        return sPref.getBoolean("isNeedAuth", false);
+        return sPref.getBoolean("isNeedAutoAuth", false);
     }
     //Получение sessionID  из файла
     public String getSessionIdFromFiles(){
@@ -174,4 +115,5 @@ public class Lobby extends AppCompatActivity {
         String savedCsrfTemp = sPref.getString("savedCsrf", "");
         return savedCsrfTemp;
     }
+
 }
