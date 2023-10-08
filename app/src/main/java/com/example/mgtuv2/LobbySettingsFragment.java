@@ -1,5 +1,7 @@
 package com.example.mgtuv2;
 
+import static com.example.mgtuv2.AuthUserTask.djangoUser;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +40,8 @@ public class LobbySettingsFragment extends Fragment {
                 }
             }
         });
+
+        //textViewSettings.setText(djangoUser.getReceivedUserInfo());
 
         return view;
     }

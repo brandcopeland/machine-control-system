@@ -53,6 +53,13 @@ public class DjangoUser {
         receivedDevicesList = inputReceivedDevicesList;
     }
 
+    //JSON String of received user info
+    private String receivedUserInfo = "";
+    public String getReceivedUserInfo(){return receivedUserInfo;}
+    public void setReceivedUserInfo(String inputReceivedUserInfo){
+        receivedUserInfo = inputReceivedUserInfo;
+    }
+
     //JSON String QrCode and timestamp полученные
     private String receivedQrCodeAndTimestamp = "";
     public String getReceivedQrCodeAndTimestamp() {
@@ -134,6 +141,7 @@ public class DjangoUser {
         setupCookies();
         this.loginUrl = siteAddress + "/login/";
     }
+
 
     //Функция авторизации на сайте через POST запрос с помощью логина и пароля
     public void auth(String username, String password) {
@@ -370,7 +378,7 @@ public class DjangoUser {
         return djangoCookieHeader;
     }
 
-    private void setupCookies() {
+    public void setupCookies() {
         Map<String, String> djangoCookies = new HashMap<>();
         djangoCookies.put("csrftoken", this.csrfToken);
         djangoCookies.put("sessionid", sessionId);

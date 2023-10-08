@@ -10,6 +10,7 @@
         android:layout_height="48dp"
         android:id="@+id/imageView"
         android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
         android:src="@drawable/baseline_developer_board_24"
         />

@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Map;
+
 //Вспомогательный класс асинхронной авторизации
 public class AuthUserTask extends AsyncTask<Void, Void, String> {
 
@@ -45,9 +48,26 @@ public class AuthUserTask extends AsyncTask<Void, Void, String> {
             djangoUser = new DjangoUser("https://k7scm.site/", lobby.getCsrfTokenFromFiles(), lobby.getSessionIdFromFiles());
         }
 
+        //Делаем GET запрос к API, чтобы получить user info
+        Map<String, String> tempParams = new HashMap<>();
+        tempParams.put("sessionid", djangoUser.getSessionId());
+        djangoUser.setupCookies();
+        HttpURLConnection conn = djangoUser.getRequest("api/profile", tempParams);
+        djangoUser.setReceivedUserInfo(djangoUser.getBody(conn));
+        System.out.println("---User info:");
+        System.out.println(djangoUser.getReceivedUserInfo());
+
+
         //Делаем GET запрос к API, чтобы получить devices list
-        HttpURLConnection conn = djangoUser.getRequest("api/accesses");
+        conn = djangoUser.getRequest("api/accesses");
         djangoUser.setReceivedDevicesList(djangoUser.getBody(conn));
+        System.out.println("LAME");
+        System.out.println(djangoUser.getReceivedDevicesList());
+
+
+
+        //djangoUser.getUserInfo();
+
 
         //Получаем настоящее время
         djangoUser.getCurrentTime();
