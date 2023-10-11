@@ -12,6 +12,7 @@
         android:id="@+id/textViewSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
         android:text="Настройки"
         android:textSize="26dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -29,6 +30,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.90999997" />
+        app:layout_constraintVertical_bias="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

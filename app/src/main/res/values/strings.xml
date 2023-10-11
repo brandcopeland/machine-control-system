@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">СКСv20</string>
+    <string name="app_name">СКСv21</string>
     <string name="login_lobby_title">Введите логин и пароль</string>
     <string name="loginErrorCommon">Ошибка авторизации, \nпопробуйте еще раз</string>
     <string name="loginErrorInternet">Нет подключения к интернету</string>

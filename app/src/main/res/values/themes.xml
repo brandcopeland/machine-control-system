@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.MgtuV2" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.MgtuV2" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/mgtu_blue</item>
         <item name="colorPrimaryVariant">@color/mgtu_blue</item>
